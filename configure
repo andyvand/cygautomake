@@ -784,7 +784,7 @@ fi
 
 # Define the identity of the package.
 PACKAGE=automake
-VERSION=1.4s
+VERSION=1.4k
 cat >> confdefs.h <<EOF
 #define PACKAGE "$PACKAGE"
 EOF
