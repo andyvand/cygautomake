@@ -1,4 +1,4 @@
-## Copyright 1996 Free Software Foundation, Inc.
+## Copyright (C) 1996 Free Software Foundation, Inc.
 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 ## @maindex FUNC_STRTOD
 ## @ovindex LIBOBJS
 ## If the @code{strtod} function is not available, or does not work
-## correctly (like the one on SunOS 5.4), add @samp{strtod.$ac_objext} to output
+## correctly (like the one on SunOS 5.4), add @samp{strtod.o} to output
 ## variable @code{LIBOBJS}.
 ## @end defmac
 
@@ -56,14 +56,14 @@ main()
   exit (0);
 }
 ], am_cv_func_strtod=yes, am_cv_func_strtod=no, am_cv_func_strtod=no)])
-test $am_cv_func_strtod = no && LIBOBJS="$LIBOBJS strtod.$ac_objext"
+test $am_cv_func_strtod = no && LIBOBJS="$LIBOBJS strtod.o"
 AC_SUBST(LIBOBJS)dnl
 am_cv_func_strtod_needs_libm=no
 if test $am_cv_func_strtod = no; then
   AC_CHECK_FUNCS(pow)
   if test $ac_cv_func_pow = no; then
     AC_CHECK_LIB(m, pow, [am_cv_func_strtod_needs_libm=yes],
-		 [AC_MSG_WARN([can't find library containing definition of pow])])
+		 [AC_MSG_WARN(can't find library containing definition of pow)])
   fi
 fi
 ])

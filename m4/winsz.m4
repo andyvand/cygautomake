@@ -1,4 +1,4 @@
-# From Jim Meyering.
+dnl From Jim Meyering.
 
 # serial 1
 

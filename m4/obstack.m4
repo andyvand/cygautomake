@@ -1,5 +1,5 @@
-# From Jim Meyering.
-# FIXME: migrate into libit.
+dnl From Jim Meyering.
+dnl FIXME: migrate into libit.
 
 AC_DEFUN([AM_FUNC_OBSTACK],
 [AC_CACHE_CHECK([for obstacks], am_cv_func_obstack,
@@ -10,6 +10,6 @@ AC_DEFUN([AM_FUNC_OBSTACK],
  if test $am_cv_func_obstack = yes; then
    AC_DEFINE(HAVE_OBSTACK,1,[Define if libc includes obstacks])
  else
-   LIBOBJS="$LIBOBJS obstack.$ac_objext"
+   LIBOBJS="$LIBOBJS obstack.o"
  fi
 ])
