@@ -8,40 +8,33 @@ test -f $srcdir/defs || {
    exit 1
 }
 
-me=`echo "$0" | sed -e 's,.*[\\/],,;s/\.test$//'`
-
-# Always use an absolute srcdir.  Otherwise symlinks made in subdirs
-# of the test dir just won't work.
+# If srcdir is relative, we need to modify it.
 case "$srcdir" in
  /*)
     ;;
 
  *)
-    srcdir=`CDPATH=: && cd "$srcdir" && pwd`
+    srcdir="../$srcdir"
     ;;
 esac
 
-chmod -R a+rwx testSubDir > /dev/null 2>&1
 rm -rf testSubDir > /dev/null 2>&1
 mkdir testSubDir
-
-# Copy in some files we need.
-for file in install-sh mkinstalldirs missing depcomp; do
-   cp $srcdir/../$file testSubDir/$file || exit 1
-done
-
-cd ./testSubDir
+cd testSubDir
 
 # Build appropriate environment in test directory.  Eg create
 # configure.in, touch all necessary files, etc.
 cat > configure.in << 'END'
-AC_INIT
-AM_INIT_AUTOMAKE(nonesuch, nonesuch)
+PACKAGE=nonesuch
+VERSION=nonesuch
 AC_ARG_PROGRAM
 AC_PROG_INSTALL
-AC_PROG_MAKE_SET
 AC_OUTPUT(Makefile)
 END
+
+: > install-sh
+: > mkinstalldirs
+: > missing
 
 # See how redirections should work.  User can set VERBOSE to see all
 # output.
@@ -55,28 +48,15 @@ test -z "$PERL" && PERL=perl
 # User can set MAKE to choose which make to use.  Must use GNU make.
 test -z "$MAKE" && MAKE=make
 
-# User can set which tools from Autoconf to use.
-test -z "$AUTOCONF" && AUTOCONF=autoconf
-if ($AUTOCONF --version) >/dev/null 2>&1; then
-  has_autoconf=:
-  needs_autoconf=:
-else
-  has_autoconf=false
-  needs_autoconf='exit 77'
-fi
-
-
 echo "=== Running test $0"
 
 # See how Automake should be run.  We put --foreign as the default
 # strictness to avoid having to create lots and lots of files.  A test
 # can override this by specifying a different strictness.
-if test -z "$AUTOMAKE"; then
-   perllibdir=$srcdir/../lib
-   export perllibdir
-   AUTOMAKE="$PERL ../../automake --amdir=$srcdir/.. --foreign"
-fi
+AUTOMAKE="$PERL ../../automake --amdir=$srcdir/.. --foreign"
 
 # See how aclocal should be run.
-test -z "$ACLOCAL" \
-   && ACLOCAL="$PERL ../../aclocal --acdir=$srcdir/../m4"
+# Most of the files are in $srcdir/../m4.  However amversion.m4 is
+# generated in ../m4, so we include that directory in the search
+# path too.
+ACLOCAL="$PERL `pwd`/../../aclocal -I `pwd`/../../m4 --acdir=$srcdir/../m4"
