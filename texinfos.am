@@ -1,6 +1,5 @@
 ## automake - create Makefile.in from Makefile.am
-## Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
-## Free Software Foundation, Inc.
+## Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -17,87 +16,137 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## ----------- ##
-## Variables.  ##
-## ----------- ##
+## FIXME: should repeat all the stuff in this file.  Instead should
+## generate the contents in a smarter way.
 
-if ! %?CYGNUS%
-MAKEINFO = @MAKEINFO@
-TEXI2DVI = texi2dvi
+.texi.info:
+## We want to force the .info file to be built in srcdir.  This is
+## probably the simplest way.  However, at Cygnus .info files are
+## always put into the build directory.  So at runtime we select which
+## rule to use.
+## Note that we also remove the possible output files before running
+## makeinfo.  Otherwise, if the texinfo file shrinks (or if you start
+## using --no-split), you'll be left with some dead info files lying
+## around -- dead files which will end up in the distribution.
+NOTCYGNUS	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
+NOTCYGNUS	cd $(srcdir) \
+NOTCYGNUS	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
+CYGNUS	@rm -f $@ $@-[0-9] $@-[0-9][0-9]
+CYGNUS	$(MAKEINFO) -I $(srcdir) $<
 
-else %?CYGNUS%
+.texi.dvi:
+	TEXINPUTS=@TEXINFODIR@:$$TEXINPUTS \
+## Must set MAKEINFO like this so that version.texi will be found even
+## if it is in srcdir.
+	  MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
 
-## Find these programs wherever they may lie.  Yes, this has
-## intimate knowledge of the structure of the texinfo distribution.
-MAKEINFO = `if test -f $(top_builddir)/../texinfo/makeinfo/makeinfo; then \
-            echo $(top_builddir)/../texinfo/makeinfo/makeinfo; \
-          else \
-            echo makeinfo; \
-          fi`
+.texi:
+## We want to force the .info file to be built in srcdir.  This is
+## probably the simplest way.  However, at Cygnus .info files are
+## always put into the build directory.  So at runtime we select which
+## rule to use.
+## Note that we also remove the possible output files before running
+## makeinfo.  Otherwise, if the texinfo file shrinks (or if you start
+## using --no-split), you'll be left with some dead info files lying
+## around -- dead files which will end up in the distribution.
+NOTCYGNUS	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
+NOTCYGNUS	cd $(srcdir) \
+NOTCYGNUS	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
+CYGNUS	@rm -f $@ $@-[0-9] $@-[0-9][0-9]
+CYGNUS	$(MAKEINFO) -I $(srcdir) $<
 
-TEXI2DVI = `if test -f $(top_srcdir)/../texinfo/util/texi2dvi; then \
-             echo $(top_srcdir)/../texinfo/util/texi2dvi; \
-           else \
-             echo texi2dvi; \
-           fi`
-endif %?CYGNUS%
+.texinfo.info:
+## We want to force the .info file to be built in srcdir.  This is
+## probably the simplest way.  However, at Cygnus .info files are
+## always put into the build directory.  So at runtime we select which
+## rule to use.
+## Note that we also remove the possible output files before running
+## makeinfo.  Otherwise, if the texinfo file shrinks (or if you start
+## using --no-split), you'll be left with some dead info files lying
+## around -- dead files which will end up in the distribution.
+NOTCYGNUS	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
+NOTCYGNUS	cd $(srcdir) \
+NOTCYGNUS	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
+CYGNUS	@rm -f $@ $@-[0-9] $@-[0-9][0-9]
+CYGNUS	$(MAKEINFO) -I $(srcdir) $<
 
-## ---------- ##
-## Building.  ##
-## ---------- ##
+.texinfo:
+## We want to force the .info file to be built in srcdir.  This is
+## probably the simplest way.  However, at Cygnus .info files are
+## always put into the build directory.  So at runtime we select which
+## rule to use.
+## Note that we also remove the possible output files before running
+## makeinfo.  Otherwise, if the texinfo file shrinks (or if you start
+## using --no-split), you'll be left with some dead info files lying
+## around -- dead files which will end up in the distribution.
+NOTCYGNUS	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
+NOTCYGNUS	cd $(srcdir) \
+NOTCYGNUS	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
+CYGNUS	@rm -f $@ $@-[0-9] $@-[0-9][0-9]
+CYGNUS	$(MAKEINFO) -I $(srcdir) $<
+
+.texinfo.dvi:
+	TEXINPUTS=@TEXINFODIR@:$$TEXINPUTS \
+## Must set MAKEINFO like this so that version.texi will be found even
+## if it is in srcdir.
+	  MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
+
+.txi.info:
+## We want to force the .info file to be built in srcdir.  This is
+## probably the simplest way.  However, at Cygnus .info files are
+## always put into the build directory.  So at runtime we select which
+## rule to use.
+## Note that we also remove the possible output files before running
+## makeinfo.  Otherwise, if the texinfo file shrinks (or if you start
+## using --no-split), you'll be left with some dead info files lying
+## around -- dead files which will end up in the distribution.
+NOTCYGNUS	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
+NOTCYGNUS	cd $(srcdir) \
+NOTCYGNUS	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
+CYGNUS	@rm -f $@ $@-[0-9] $@-[0-9][0-9]
+CYGNUS	$(MAKEINFO) -I $(srcdir) $<
+
+.txi.dvi:
+	TEXINPUTS=@TEXINFODIR@:$$TEXINPUTS \
+## Must set MAKEINFO like this so that version.texi will be found even
+## if it is in srcdir.
+	  MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
+
+.txi:
+## We want to force the .info file to be built in srcdir.  This is
+## probably the simplest way.  However, at Cygnus .info files are
+## always put into the build directory.  So at runtime we select which
+## rule to use.
+## Note that we also remove the possible output files before running
+## makeinfo.  Otherwise, if the texinfo file shrinks (or if you start
+## using --no-split), you'll be left with some dead info files lying
+## around -- dead files which will end up in the distribution.
+NOTCYGNUS	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
+NOTCYGNUS	cd $(srcdir) \
+NOTCYGNUS	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
+CYGNUS	@rm -f $@ $@-[0-9] $@-[0-9][0-9]
+CYGNUS	$(MAKEINFO) -I $(srcdir) $<
 
 ## The way to make PostScript, for those who want it.
 DVIPS = dvips
 .dvi.ps:
 	$(DVIPS) $< -o $@
 
-.PHONY: info info-am dvi dvi-am
-if %?SUBDIRS%
-RECURSIVE_TARGETS += info-recursive dvi-recursive
-.PHONY info: info-recursive
-.PHONY dvi: dvi-recursive
-else !%?SUBDIRS%
-info: info-am
-dvi: dvi-am
-endif !%?SUBDIRS%
-
-info-am: $(INFO_DEPS)
-dvi-am: $(DVIS)
-
-
-## ------------ ##
-## Installing.  ##
-## ------------ ##
-
 ## Look in both . and srcdir because the info pages might have been
 ## rebuilt in the build directory.  Can't cd to srcdir; that might
 ## break a possible install-sh reference.
-##
 ## Funny name due to --cygnus influence; we want to reserve
 ## `install-info' for the user.
-##
-## TEXINFOS primary are always installed in infodir, hence install-data
-## is hard coded.
-if %?INSTALL-INFO%
-_am_installdirs += $(DESTDIR)$(infodir)
-install-data-am: install-info-am
-if %?SUBDIRS%
-RECURSIVE_TARGETS += install-info-recursive
-.PHONY install-info: install-info-recursive
-else !%?SUBDIRS%
-.PHONY install-info: install-info-am
-endif !%?SUBDIRS%
-endif %?INSTALL-INFO%
 install-info-am: $(INFO_DEPS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(infodir)
 	@list='$(INFO_DEPS)'; \
 	for file in $$list; do \
-?CYGNUS?	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
-?!CYGNUS?	  d=$(srcdir); \
+CYGNUS	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+NOTCYGNUS	  d=$(srcdir); \
 ## We use these strange circumlocutions because we want the "ifile" to
 ## be relative, for the install.
-	  for ifile in `CDPATH=: && cd $$d && echo $$file $$file-[0-9] $$file-[0-9][0-9]`; do \
+	  for ifile in `cd $$d && echo $$file $$file-[0-9] $$file-[0-9][0-9]`; do \
 	    if test -f $$d/$$ifile; then \
 	      echo " $(INSTALL_DATA) $$d/$$ifile $(DESTDIR)$(infodir)/$$ifile"; \
 	      $(INSTALL_DATA) $$d/$$ifile $(DESTDIR)$(infodir)/$$ifile; \
@@ -107,9 +156,8 @@ install-info-am: $(INFO_DEPS)
 	@$(POST_INSTALL)
 ## Only run this code if install-info actually exists, and it is not
 ## the Debian install-info.  FIXME: once Debian install-info goes
-## away, we can remove this hack.  Debian install-info v1.8.3
-## prints version info to stderr.
-	@if $(SHELL) -c 'install-info --version 2>&1 | sed 1q | fgrep -s -v -i debian' >/dev/null 2>&1; then \
+## away, we can remove this hack.
+	@if $(SHELL) -c 'install-info --version | sed 1q | fgrep -s -v -i debian' >/dev/null 2>&1; then \
 	  list='$(INFO_DEPS)'; \
 	  for file in $$list; do \
 ## Run `:' after install-info in case install-info fails.  We really
@@ -124,78 +172,34 @@ install-info-am: $(INFO_DEPS)
 	  done; \
 	else : ; fi
 
-
-## -------------- ##
-## Uninstalling.  ##
-## -------------- ##
-
-?SUBDIRS?RECURSIVE_TARGETS += uninstall-info-recursive
-?SUBDIRS?.PHONY uninstall-info: uninstall-info-recursive
-?!SUBDIRS?.PHONY uninstall-info: uninstall-info-am
-?INSTALL-INFO?uninstall-am: uninstall-info-am
-
-uninstall-info-am:
+uninstall-info:
 	$(PRE_UNINSTALL)
 ## Run two loops here so that we can handle PRE_UNINSTALL and
-## NORMAL_UNINSTALL correctly.  Debian install-info v1.8.3 prints
-## version info to stderr.
-	@if $(SHELL) -c 'install-info --version 2>&1 | sed 1q | fgrep -s -v -i debian' >/dev/null 2>&1; then \
-	  list='$(INFO_DEPS)'; \
-	  for file in $$list; do \
-## install-info needs the actual info file.  We use the installed one,
-## rather than relying on one still being in srcdir or builddir.
-	    echo " install-info --info-dir=$(DESTDIR)$(infodir) --remove $(DESTDIR)$(infodir)/$$file"; \
-	    install-info --info-dir=$(DESTDIR)$(infodir) --remove $(DESTDIR)$(infodir)/$$file; \
-	  done; \
-	else :; fi
-	@$(NORMAL_UNINSTALL)
-	@list='$(INFO_DEPS)'; \
+## NORMAL_UNINSTALL correctly.
+	@if $(SHELL) -c 'install-info --version | sed 1q | fgrep -s -v -i debian' >/dev/null 2>&1; then \
+	  ii=yes; \
+	else ii=; fi; \
+	list='$(INFO_DEPS)'; \
 	for file in $$list; do \
-	  (if cd $(DESTDIR)$(infodir); then \
-	     echo " rm -f $$file $$file-[0-9] $$file-[0-9][0-9])"; \
-	     rm -f $$file $$file-[0-9] $$file-[0-9][0-9]; \
-	   else :; fi); \
+	  test -z "$$ii" \
+	    || install-info --info-dir=$(DESTDIR)$(infodir) --remove $$file; \
+	done
+	@$(NORMAL_UNINSTALL)
+	list='$(INFO_DEPS)'; \
+	for file in $$list; do \
+	  (cd $(DESTDIR)$(infodir) && rm -f $$file $$file-[0-9] $$file-[0-9][0-9]); \
 	done
 
-.PHONY: dist-info
 dist-info: $(INFO_DEPS)
 	list='$(INFO_DEPS)'; \
 	for base in $$list; do \
 ## In Cygnus mode, allow info file to be in source or build dir.  In
 ## other modes, allow only source dir.
-?!CYGNUS?	  d=$(srcdir); \
-?CYGNUS?	  if test -f $$base; then d=.; else d=$(srcdir); fi; \
-	  for file in `CDPATH=: && cd $$d && eval echo $$base*`; do \
+NOTCYGNUS	  d=$(srcdir); \
+CYGNUS	  if test -f $$base; then d=.; else d=$(srcdir); fi; \
+	  for file in `cd $$d && eval echo $$base*`; do \
 	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file; \
 	  done; \
 	done
-
-
-
-## ---------- ##
-## Cleaning.  ##
-## ---------- ##
-
-## The funny name is due to --cygnus influence; in Cygnus mode,
-## `clean-info' is a target that users can use.
-
-.PHONY: mostlyclean-aminfo
-mostlyclean-am: mostlyclean-aminfo
-mostlyclean-aminfo:
-	-rm -f %TEXICLEAN%
-
-.PHONY: maintainer-clean-aminfo
-maintainer-clean-am: maintainer-clean-aminfo
-maintainer-clean-aminfo:
-## Eww.  But how else can we find all the output files from makeinfo?
-?!CYGNUS?	cd $(srcdir) && \
-	for i in $(INFO_DEPS); do \
-	  rm -f $$i; \
-	  if test "`echo $$i-[0-9]*`" != "$$i-[0-9]*"; then \
-	    rm -f $$i-[0-9]*; \
-	  fi; \
-	done
-
-?CYGNUS?.PHONY: clean-info
-?CYGNUS?clean-info: mostlyclean-aminfo
