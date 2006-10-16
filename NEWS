@@ -1,16 +1,4 @@
-New in 1.10a:
- 
-* Languages changes:
-
-  - subdir-object mode works now with Fortran (F77, FC, preprocessed
-    Fortran, and Ratfor).
-
-  - For files with extension .f90 or .f95, the flag $(FCFLAGS_f9x)
-    computed by AC_FC_SRCEXT is now honored in compile rules.
-
-* Miscellaneous changes:
-
-  - New shorthand `$(pkglibexecdir)' for `$(libexecdir)/@PACKAGE@'.
+New in 1.10.0a:
 
 New in 1.10:
 
