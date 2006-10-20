@@ -1864,15 +1864,13 @@ the @dfn{primary}.  For instance, the primary @code{PROGRAMS} holds a
 list of programs that are to be compiled and linked.
 @vindex PROGRAMS
 
-@cindex @code{pkgdatadir}, defined
-@cindex @code{pkgincludedir}, defined
 @cindex @code{pkglibdir}, defined
-@cindex @code{pkglibexecdir}, defined
+@cindex @code{pkgincludedir}, defined
+@cindex @code{pkgdatadir}, defined
 
-@vindex pkgdatadir
-@vindex pkgincludedir
 @vindex pkglibdir
-@vindex pkglibexecdir
+@vindex pkgincludedir
+@vindex pkgdatadir
 
 @cindex @code{PACKAGE}, directory
 A different set of names is used to decide where the built objects
@@ -1880,9 +1878,9 @@ should be installed.  These names are prefixes to the primary, and they
 indicate which standard directory should be used as the installation
 directory.  The standard directory names are given in the GNU standards
 (@pxref{Directory Variables, , , standards, The GNU Coding Standards}).
-Automake extends this list with @code{pkgdatadir}, @code{pkgincludedir},
-@code{pkglibdir}, and @code{pkglibexecdir}; these are the same as the
-non-@samp{pkg} versions, but with @samp{$(PACKAGE)} appended.  For instance,
+Automake extends this list with @code{pkglibdir}, @code{pkgincludedir},
+and @code{pkgdatadir}; these are the same as the non-@samp{pkg}
+versions, but with @samp{$(PACKAGE)} appended.  For instance,
 @code{pkglibdir} is defined as @samp{$(libdir)/$(PACKAGE)}.
 
 @cindex @code{EXTRA_}, prepending
@@ -2781,11 +2779,6 @@ Programs, , Particular Program Checks, autoconf, The Autoconf Manual}.
 This is required for programs and shared libraries that are a mixture of
 languages that include Fortran 77 (@pxref{Mixing Fortran 77 With C and
 C++}).  @xref{Macros, , Autoconf macros supplied with Automake}.
-
-@item AC_FC_SRCEXT
-Automake will add the flags computed by @code{AC_FC_SRCEXT} to compilation
-of files with the respective source extension (@pxref{Fortran Compiler, ,
-Fortran Compiler Characteristics, autoconf, The Autoconf Manual}).
 
 @item AC_PROG_FC
 This is required if any Fortran 90/95 source is included.  This macro is
@@ -4400,9 +4393,9 @@ programs.  Most of the comments about these also apply to libraries
 In a directory containing source that gets built into a program (as
 opposed to a library or a script), the @code{PROGRAMS} primary is used.
 Programs can be installed in @code{bindir}, @code{sbindir},
-@code{libexecdir}, @code{pkglibdir}, @code{pkglibexecdir}, or not at all
-(@code{noinst_}).  They can also be built only for @samp{make check}, in
-which case the prefix is @samp{check_}.
+@code{libexecdir}, @code{pkglibdir}, or not at all (@code{noinst_}).
+They can also be built only for @samp{make check}, in which case the
+prefix is @samp{check_}.
 
 For instance:
 
@@ -6311,7 +6304,7 @@ trick with @code{nodist_EXTRA_@dots{}_SOURCES}.
 @cindex Fortran 9x support
 @cindex Support for Fortran 9x
 
-Automake includes support for Fortran 9x.
+Automake includes full support for Fortran 9x.
 
 Any package including Fortran 9x code must define the output variable
 @code{FC} in @file{configure.ac}; the simplest way to do this is to use
@@ -6356,11 +6349,8 @@ is as follows:
 
 @table @file
 
-@item .f90
-@code{$(FC) $(AM_FCFLAGS) $(FCFLAGS) -c $(FCFLAGS_f90) $<}
-
-@item .f95
-@code{$(FC) $(AM_FCFLAGS) $(FCFLAGS) -c $(FCFLAGS_f95) $<}
+@item .f9x
+@code{$(FC) -c $(AM_FCFLAGS) $(FCFLAGS)}
 
 @end table
 
@@ -7944,7 +7934,7 @@ dist-hook:
         cp -p $(srcdir)/random/a1 $(srcdir)/random/a2 $(distdir)/random
 @end example
 
-Another way to to use this is for removing unnecessary files that get
+Another way to use this is for removing unnecessary files that get
 recursively included by specifying a directory in EXTRA_DIST:
 
 @example
@@ -11799,9 +11789,8 @@ This was also a problem in the previous dependency tracking implementation.
 
 The current fix is to use @code{BUILT_SOURCES} to list built headers
 (@pxref{Sources}).  This causes them to be built before any other
-other build rules are run.  This is unsatisfactory as a general
-solution, however in practice it seems sufficient for most actual
-programs.
+build rules are run.  This is unsatisfactory as a general solution,
+however in practice it seems sufficient for most actual programs.
 @end itemize
 
 This code is used since Automake 1.5.
