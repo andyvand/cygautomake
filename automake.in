@@ -7,7 +7,7 @@ eval 'case $# in 0) exec @PERL@ -S "$0";; *) exec @PERL@ -S "$0" "$@";; esac'
 
 # automake - create Makefile.in from Makefile.am
 # Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
-# 2003, 2004, 2005, 2006  Free Software Foundation, Inc.
+# 2003, 2004, 2005, 2006, 2007  Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -240,13 +240,13 @@ my %standard_prefix =
     map { $_ => 1 } (qw(bin data dataroot dvi exec html include info
                         lib libexec lisp localstate man man1 man2 man3
 			man4 man5 man6 man7 man8 man9 oldinclude pdf
-			pkgdatadir pkgincludedir pkglibdir pkglibexecdir
-			ps sbin sharedstate sysconf));
+			pkgdatadir pkgincludedir pkglibdir ps sbin
+			sharedstate sysconf));
 
 # Copyright on generated Makefile.ins.
 my $gen_copyright = "\
 # Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
-# 2003, 2004, 2005, 2006  Free Software Foundation, Inc.
+# 2003, 2004, 2005, 2006, 2007  Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -416,9 +416,6 @@ my $configure_dist_common = '';
 my %languages = ();
 # Maps each linker variable onto a language object.
 my %link_languages = ();
-
-# maps extensions to needed source flags.
-my %sourceflags = ();
 
 # List of targets we must always output.
 # FIXME: Complete, and remove falsely required targets.
@@ -1285,7 +1282,6 @@ sub handle_languages
 			     DEPBASE   => $depbase,
 			     BASE      => '$*',
 			     SOURCE    => '$<',
-			     SOURCEFLAG => $sourceflags{$ext} || '',
 			     OBJ       => '$@',
 			     OBJOBJ    => '$@',
 			     LTOBJ     => '$@',
@@ -1301,7 +1297,7 @@ sub handle_languages
 	my %seen_files = ();
 	foreach my $file (@{$lang_specific_files{$lang->name}})
 	{
-	    my ($derived, $source, $obj, $myext, $srcext, %file_transform) = @$file;
+	    my ($derived, $source, $obj, $myext, %file_transform) = @$file;
 
 	    # We might see a given object twice, for instance if it is
 	    # used under different conditions.
@@ -1422,7 +1418,6 @@ sub handle_languages
 				     DEPBASE   => $depbase_,
 				     BASE      => $obj_,
 				     SOURCE    => $source_,
-				     SOURCEFLAG => $sourceflags{$srcext} || '',
 				     OBJ       => "$obj_$myext",
 				     OBJOBJ    => "$obj_.obj",
 				     LTOBJ     => "$obj_.lo",
@@ -1446,7 +1441,6 @@ sub handle_languages
 			     DEPBASE   => $depbase,
 			     BASE      => $obj,
 			     SOURCE    => $source,
-			     SOURCEFLAG => $sourceflags{$srcext} || '',
 			     # Use $myext and not `.o' here, in case
 			     # we are actually building a new source
 			     # file -- e.g. via yacc.
@@ -1785,8 +1779,7 @@ sub handle_single_transform ($$$$$%)
 				 # Only use $this_obj_ext in the derived
 				 # source case because in the other case we
 				 # *don't* want $(OBJEXT) to appear here.
-				 ($derived_source ? $this_obj_ext : '.o'),
-			         $extension);
+				 ($derived_source ? $this_obj_ext : '.o'));
 
 		# If we renamed the object then we want to use the
 		# per-executable flag name.  But if this is simply a
@@ -4753,6 +4746,10 @@ sub scan_autoconf_config_files ($$)
       # Handle $local:$input syntax.
       my ($local, @rest) = split (/:/);
       @rest = ("$local.in",) unless @rest;
+      msg ('portability', $where,
+	  "Omit leading `./' from config file names such as `$local',"
+	  . "\nas not all make implementations treat `file' and `./file' equally.")
+	if ($local =~ /^\.\//);
       my $input = locate_am @rest;
       if ($input)
         {
@@ -4789,7 +4786,6 @@ sub scan_autoconf_traces ($)
 		AC_CONFIG_HEADERS => 1,
 		AC_CONFIG_LIBOBJ_DIR => 1,
 		AC_CONFIG_LINKS => 1,
-		AC_FC_SRCEXT => 1,
 		AC_INIT => 0,
 		AC_LIBSOURCE => 1,
                 AC_REQUIRE_AUX_FILE => 1,
@@ -4901,14 +4897,6 @@ sub scan_autoconf_traces ($)
 	      $ac_config_files_location{$dest} = $where;
 	      push @config_links, $spec;
 	    }
-	}
-      elsif ($macro eq 'AC_FC_SRCEXT')
-        {
-	  my $suffix = $args[1];
-	  # These flags are used as %SOURCEFLAG% in depend2.am,
-	  # where the trailing space is important.
-	  $sourceflags{'.' . $suffix} = '$(FCFLAGS_' . $suffix . ') '
-	    if ($suffix eq 'f90' || $suffix eq 'f95');
 	}
       elsif ($macro eq 'AC_INIT')
         {
@@ -5356,31 +5344,31 @@ sub lang_cppasm_rewrite
 # Rewrite a single Fortran 77 file.
 sub lang_f77_rewrite
 {
-    return &lang_sub_obj;
+    return LANG_PROCESS;
 }
 
 # Rewrite a single Fortran file.
 sub lang_fc_rewrite
 {
-    return &lang_sub_obj;
+    return LANG_PROCESS;
 }
 
 # Rewrite a single preprocessed Fortran file.
 sub lang_ppfc_rewrite
 {
-    return &lang_sub_obj;
+    return LANG_PROCESS;
 }
 
 # Rewrite a single preprocessed Fortran 77 file.
 sub lang_ppf77_rewrite
 {
-    return &lang_sub_obj;
+    return LANG_PROCESS;
 }
 
 # Rewrite a single ratfor file.
 sub lang_ratfor_rewrite
 {
-    return &lang_sub_obj;
+    return LANG_PROCESS;
 }
 
 # Rewrite a single Objective C file.
