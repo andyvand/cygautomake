@@ -227,6 +227,7 @@ empty3.test \
 empty4.test \
 exdir.test \
 exdir2.test \
+exdir3.test \
 exeext.test \
 exeext2.test \
 exeext3.test \
@@ -247,9 +248,6 @@ fn99subdir.test \
 fnoc.test \
 fo.test	\
 fort1.test \
-fort2.test \
-fort4.test \
-fort5.test \
 fonly.test \
 fortdep.test \
 fpinst2.test \
@@ -304,7 +302,6 @@ lex2.test \
 lex3.test \
 lex4.test \
 lex5.test \
-libexec.test \
 libobj2.test \
 libobj3.test \
 libobj4.test \
